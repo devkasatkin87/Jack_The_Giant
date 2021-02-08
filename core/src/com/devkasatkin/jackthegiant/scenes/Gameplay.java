@@ -5,11 +5,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
 
 public class Gameplay implements Screen {
-    private GameMain game;
+    private final GameMain game;
     private Sprite[] bgs;
 
     public Gameplay(GameMain game) {
@@ -27,8 +26,8 @@ public class Gameplay implements Screen {
     }
 
     private void drawBackgrounds() {
-        for (int i = 0; i < bgs.length; i++) {
-            game.getBatch().draw(bgs[i], bgs[i].getX(), bgs[i].getY());
+        for (Sprite bg : bgs) {
+            game.getBatch().draw(bg, bg.getX(), bg.getY());
         }
     }
 
