@@ -6,8 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.devkasatkin.jackthegiant.clouds.Cloud;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
 
@@ -15,8 +19,14 @@ public class Gameplay implements Screen {
     private final GameMain game;
     private Sprite[] bgs;
     private OrthographicCamera mainCamera;
+    private OrthographicCamera box2DCamera;
+    private Box2DDebugRenderer debugRenderer;
+    private World world;
     private Viewport viewport;
     private float lastYposition;
+
+    //delete
+    Cloud c;
 
     public Gameplay(GameMain game) {
         this.game = game;
@@ -26,16 +36,28 @@ public class Gameplay implements Screen {
 
         viewport = new StretchViewport(GameInfo.WIDTH, GameInfo.HEIGHT, mainCamera);
 
+        box2DCamera = new OrthographicCamera();
+        box2DCamera.setToOrtho(false, GameInfo.WIDTH / GameInfo.PPM,
+                GameInfo.HEIGHT / GameInfo.PPM);
+        box2DCamera.position.set(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f, 0);
+
+        debugRenderer = new Box2DDebugRenderer();
+
+        world = new World(new Vector2(0, -9.8f), true);
+
         createBackgrounds();
     }
 
     public void update(float dt) {
-        moveCamera();
+        //moveCamera();
+        c = new Cloud(world, "Cloud 1");
+        c.setSpritePosition(GameInfo.WIDTH / 2f,
+                GameInfo.HEIGHT / 2f);
         checkBackgroundOutOfBounds();
     }
 
     private void moveCamera() {
-        mainCamera.position.y -= 10;
+        mainCamera.position.y -= 5;
     }
 
 
@@ -78,7 +100,10 @@ public class Gameplay implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.getBatch().begin();
         drawBackgrounds();
+        game.getBatch().draw(c, c.getX() - c.getWidth() / 2f, c.getY() - c.getHeight() / 2f);
         game.getBatch().end();
+
+        debugRenderer.render(world, box2DCamera.combined);
 
         game.getBatch().setProjectionMatrix(mainCamera.combined);
         mainCamera.update();
