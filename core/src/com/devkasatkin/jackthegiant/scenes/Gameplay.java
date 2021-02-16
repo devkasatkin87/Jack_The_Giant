@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.clouds.Cloud;
+import com.devkasatkin.jackthegiant.clouds.CloudsController;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
 
@@ -24,9 +25,7 @@ public class Gameplay implements Screen {
     private World world;
     private Viewport viewport;
     private float lastYposition;
-
-    //delete
-    Cloud c;
+    private CloudsController cloudsController;
 
     public Gameplay(GameMain game) {
         this.game = game;
@@ -45,19 +44,18 @@ public class Gameplay implements Screen {
 
         world = new World(new Vector2(0, -9.8f), true);
 
+        cloudsController = new CloudsController(world);
+
         createBackgrounds();
     }
 
     public void update(float dt) {
-        //moveCamera();
-        c = new Cloud(world, "Cloud 1");
-        c.setSpritePosition(GameInfo.WIDTH / 2f,
-                GameInfo.HEIGHT / 2f);
+        moveCamera();
         checkBackgroundOutOfBounds();
     }
 
     private void moveCamera() {
-        mainCamera.position.y -= 5;
+        mainCamera.position.y -= 1.5f;
     }
 
 
@@ -99,8 +97,10 @@ public class Gameplay implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.getBatch().begin();
+
         drawBackgrounds();
-        game.getBatch().draw(c, c.getX() - c.getWidth() / 2f, c.getY() - c.getHeight() / 2f);
+        cloudsController.drawClouds(game.getBatch());
+
         game.getBatch().end();
 
         debugRenderer.render(world, box2DCamera.combined);
