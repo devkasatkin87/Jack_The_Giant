@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.player.Player;
 
 import java.util.Random;
 
@@ -104,6 +105,12 @@ public class CloudsController {
            createClouds();
            positionClouds(false);
         }
+    }
+
+
+    public Player positionThePlayer(Player player) {
+        player = new Player(world, clouds.get(0).getX(), clouds.get(0).getY() + 100);
+        return player;
     }
 
     private float randomBetweenNumbers(float min, float max) {
