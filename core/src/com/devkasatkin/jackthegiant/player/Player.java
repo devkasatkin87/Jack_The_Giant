@@ -24,7 +24,7 @@ public class Player extends Sprite {
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((getWidth() / 2f - 6) / GameInfo.PPM, (getHeight() / 2f / GameInfo.PPM));
+        shape.setAsBox((getWidth() / 2f - 15) / GameInfo.PPM, (getHeight() / 2f / GameInfo.PPM));
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = 4f; //this is the mass of body
