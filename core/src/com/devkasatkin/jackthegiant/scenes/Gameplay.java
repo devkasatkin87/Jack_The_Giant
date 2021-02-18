@@ -1,6 +1,7 @@
 package com.devkasatkin.jackthegiant.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.devkasatkin.jackthegiant.clouds.Cloud;
 import com.devkasatkin.jackthegiant.clouds.CloudsController;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
@@ -53,7 +53,16 @@ public class Gameplay implements Screen {
         createBackgrounds();
     }
 
+    public void handleInput(float dt) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            player.movePlayer(-2);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            player.movePlayer(2);
+        }
+    }
+
     public void update(float dt) {
+        handleInput(dt);
         //moveCamera();
         checkBackgroundOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);

@@ -22,6 +22,7 @@ public class Player extends Sprite {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / GameInfo.PPM, getY() / GameInfo.PPM);
         body = world.createBody(bodyDef);
+        body.setFixedRotation(true);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox((getWidth() / 2f - 15) / GameInfo.PPM, (getHeight() / 2f / GameInfo.PPM));
@@ -34,6 +35,10 @@ public class Player extends Sprite {
         Fixture fixture = body.createFixture(fixtureDef);
 
         shape.dispose();
+    }
+
+    public void movePlayer(float x) {
+        body.setLinearVelocity(x, body.getLinearVelocity().y);
     }
 
     public void update() {
