@@ -63,7 +63,7 @@ public class Gameplay implements Screen {
 
     public void update(float dt) {
         handleInput(dt);
-        //moveCamera();
+        moveCamera();
         checkBackgroundOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
