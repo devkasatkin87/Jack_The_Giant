@@ -58,12 +58,14 @@ public class Gameplay implements Screen {
             player.movePlayer(-2);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             player.movePlayer(2);
+        } else {
+            player.setWalking(false);
         }
     }
 
     public void update(float dt) {
         handleInput(dt);
-        moveCamera();
+        //moveCamera();
         checkBackgroundOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
@@ -116,7 +118,8 @@ public class Gameplay implements Screen {
         drawBackgrounds();
         cloudsController.drawClouds(game.getBatch());
 
-        player.draw(game.getBatch());
+        player.drawIdle(game.getBatch());
+        player.drawPlayerAnimation(game.getBatch());
 
         game.getBatch().end();
 
