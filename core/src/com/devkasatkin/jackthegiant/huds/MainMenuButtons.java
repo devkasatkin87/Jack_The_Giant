@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.Gameplay;
-import com.devkasatkin.jackthegiant.scenes.MainMenu;
+import com.devkasatkin.jackthegiant.scenes.Highscore;
 
 public class MainMenuButtons {
     private GameMain game;
@@ -83,6 +83,7 @@ public class MainMenuButtons {
         highScoreBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new Highscore(game));
             }
         });
 
