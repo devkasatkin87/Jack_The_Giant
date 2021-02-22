@@ -16,6 +16,7 @@ import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.Gameplay;
 import com.devkasatkin.jackthegiant.scenes.Highscore;
+import com.devkasatkin.jackthegiant.scenes.Options;
 
 public class MainMenuButtons {
     private GameMain game;
@@ -68,7 +69,7 @@ public class MainMenuButtons {
         highScoreBtn.setPosition(GameInfo.WIDTH / 2f - 60, GameInfo.HEIGHT / 2f - 20, Align.center);
         optionsBtn.setPosition(GameInfo.WIDTH / 2f - 40, GameInfo.HEIGHT / 2f - 90,  Align.center);
         quitBtn.setPosition(GameInfo.WIDTH / 2f - 20, GameInfo.HEIGHT / 2f - 160, Align.center);
-        musicBtn.setPosition(GameInfo.WIDTH / 2f - 13, 13, Align.center);
+        musicBtn.setPosition(GameInfo.WIDTH / 2f - 13, 30, Align.center);
 
     }
 
@@ -90,6 +91,7 @@ public class MainMenuButtons {
         optionsBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new Options(game));
             }
         });
 

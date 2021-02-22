@@ -76,5 +76,6 @@ public class Highscore implements Screen {
     @Override
     public void dispose() {
         bg.dispose();
+        btn.getStage().dispose();
     }
 }// highscore
