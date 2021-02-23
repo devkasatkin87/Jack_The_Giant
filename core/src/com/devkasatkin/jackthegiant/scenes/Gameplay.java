@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.clouds.CloudsController;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.huds.UIHud;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.player.Player;
 
@@ -28,6 +29,7 @@ public class Gameplay implements Screen {
     private float lastYposition;
     private CloudsController cloudsController;
     private Player player;
+    private UIHud hud;
 
     public Gameplay(GameMain game) {
         this.game = game;
@@ -49,6 +51,8 @@ public class Gameplay implements Screen {
         cloudsController = new CloudsController(world);
 
         player = cloudsController.positionThePlayer(player);
+
+        hud = new UIHud(game);
 
         createBackgrounds();
     }
@@ -127,6 +131,8 @@ public class Gameplay implements Screen {
 
         game.getBatch().setProjectionMatrix(mainCamera.combined);
         mainCamera.update();
+        game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
         player.update();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
