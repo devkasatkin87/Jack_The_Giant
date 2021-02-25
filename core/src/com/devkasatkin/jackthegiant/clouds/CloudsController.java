@@ -3,6 +3,7 @@ package com.devkasatkin.jackthegiant.clouds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.devkasatkin.jackthegiant.collectables.Collectable;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
 import com.devkasatkin.jackthegiant.player.Player;
 
@@ -11,6 +12,7 @@ import java.util.Random;
 public class CloudsController {
     private World world;
     private Array<Cloud> clouds = new Array<>();
+    private Array<Collectable> collectables = new Array<>();
 
     private final float DISTANCE_BETWEEN_CLOUDS = 250f;
     private float minX;
@@ -84,6 +86,12 @@ public class CloudsController {
                 lastCloudPositionY = positionY;
             }
         }
+
+        Collectable c1 = new Collectable(world, "Coin");
+        c1.setCollectablePosition(clouds.get(1).getX(),
+                clouds.get(1).getY() + 40);
+        collectables.add(c1);
+
     }
 
     public void drawClouds(SpriteBatch batch) {
@@ -94,6 +102,23 @@ public class CloudsController {
             } else {
                 batch.draw(c, c.getX() - c.getWidth() / 2f + 10,
                         c.getY() - c.getHeight() / 2f);
+            }
+        }
+    }
+
+    public void drawCollectables(SpriteBatch batch) {
+        for (Collectable c : collectables) {
+            c.updateCollectable();
+            batch.draw(c, c.getX(), c.getY());
+        }
+    }
+
+    public void removeCollectables() {
+        for (int i = 0; i < collectables.size; i++) {
+            if (collectables.get(i).getFixture().getUserData() == "Remove") {
+                collectables.get(i).changeFilter();
+                collectables.get(i).getTexture().dispose();
+                collectables.removeIndex(i);
             }
         }
     }
@@ -115,7 +140,7 @@ public class CloudsController {
 
 
     public Player positionThePlayer(Player player) {
-        player = new Player(world, clouds.get(0).getX(), clouds.get(0).getY() + 100);
+        player = new Player(world, clouds.get(0).getX(), clouds.get(0).getY() + 78);
         return player;
     }
 

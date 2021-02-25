@@ -8,8 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.clouds.CloudsController;
@@ -18,7 +17,7 @@ import com.devkasatkin.jackthegiant.huds.UIHud;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.player.Player;
 
-public class Gameplay implements Screen {
+public class Gameplay implements Screen, ContactListener {
     private final GameMain game;
     private Sprite[] bgs;
     private OrthographicCamera mainCamera;
@@ -47,6 +46,8 @@ public class Gameplay implements Screen {
         debugRenderer = new Box2DDebugRenderer();
 
         world = new World(new Vector2(0, -9.8f), true);
+        //inform the world that the contact listener is the gameplay class
+        world.setContactListener(this);
 
         cloudsController = new CloudsController(world);
 
@@ -121,6 +122,7 @@ public class Gameplay implements Screen {
 
         drawBackgrounds();
         cloudsController.drawClouds(game.getBatch());
+        cloudsController.drawCollectables(game.getBatch());
 
         player.drawIdle(game.getBatch());
         player.drawPlayerAnimation(game.getBatch());
@@ -166,5 +168,48 @@ public class Gameplay implements Screen {
         player.getTexture().dispose();
 
         debugRenderer.dispose();
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture body1;
+        Fixture body2;
+
+        if (contact.getFixtureA().getUserData() == "Player") {
+            body1 = contact.getFixtureA();
+            body2 = contact.getFixtureB();
+        } else {
+            body1 = contact.getFixtureB();
+            body2 = contact.getFixtureA();
+        }
+
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Coin") {
+            //collided with the coin
+            System.out.println("COIN");
+            body2.setUserData("Remove");
+            cloudsController.removeCollectables();
+        }
+
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Life") {
+            //collided with the life
+            System.out.println("LIFE");
+            body2.setUserData("Remove");
+            cloudsController.removeCollectables();
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 }// gameplay

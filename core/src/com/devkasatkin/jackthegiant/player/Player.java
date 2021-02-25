@@ -44,11 +44,14 @@ public class Player extends Sprite {
         shape.setAsBox((getWidth() / 2f - 15) / GameInfo.PPM, (getHeight() / 2f / GameInfo.PPM));
 
         FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
         fixtureDef.density = 4f; //this is the mass of body
         fixtureDef.friction = 2f; // will make player not slide on surface
-        fixtureDef.shape = shape;
+        fixtureDef.filter.categoryBits = GameInfo.PLAYER;
+        fixtureDef.filter.maskBits = GameInfo.DEFAULT | GameInfo.COLLECTABLE;
 
         Fixture fixture = body.createFixture(fixtureDef);
+        fixture.setUserData("Player");
 
         shape.dispose();
     }
@@ -66,8 +69,13 @@ public class Player extends Sprite {
     }
 
     public void update() {
-        setPosition(body.getPosition().x * GameInfo.PPM,
-                body.getPosition().y * GameInfo.PPM);
+        if (body.getLinearVelocity().x > 0) {
+            setPosition(body.getPosition().x * GameInfo.PPM,
+                    body.getPosition().y * GameInfo.PPM);
+        } else if (body.getLinearVelocity().x < 0) {
+            setPosition((body.getPosition().x - 0.2f) * GameInfo.PPM,
+                    body.getPosition().y * GameInfo.PPM);
+        }
     }
 
     public void drawIdle(SpriteBatch batch) {
