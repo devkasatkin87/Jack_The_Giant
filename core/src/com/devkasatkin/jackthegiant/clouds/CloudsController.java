@@ -84,13 +84,29 @@ public class CloudsController {
                 c.setSpritePosition(tempX, positionY);
                 positionY -= DISTANCE_BETWEEN_CLOUDS;
                 lastCloudPositionY = positionY;
+
+                //spawn collectable items
+                if (!firstTimeArranging && !c.getCloudName().equals("Dark Cloud")) {
+                    int rand = random.nextInt(10);
+                    if (rand > 5) {
+                        int randomCollectable = random.nextInt(2);
+                        if (randomCollectable == 0) {
+                            //spawn a life, if the life counter is lower than 2
+                            Collectable collectable = new Collectable(world, "Life");
+                            collectable.setCollectablePosition(c.getX(),
+                                    c.getY() + 40);
+                            collectables.add(collectable);
+                        } else {
+                            //spawn a coin
+                            Collectable collectable = new Collectable(world, "Coin");
+                            collectable.setCollectablePosition(c.getX(),
+                                    c.getY() + 40);
+                            collectables.add(collectable);
+                        }
+                    }
+                }
             }
         }
-
-        Collectable c1 = new Collectable(world, "Coin");
-        c1.setCollectablePosition(clouds.get(1).getX(),
-                clouds.get(1).getY() + 40);
-        collectables.add(c1);
 
     }
 
