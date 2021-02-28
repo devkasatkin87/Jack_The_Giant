@@ -74,6 +74,7 @@ public class Gameplay implements Screen, ContactListener {
         checkBackgroundOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
+        cloudsController.removeOffScreenCollectables();
     }
 
     private void moveCamera() {

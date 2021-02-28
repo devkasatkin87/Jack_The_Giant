@@ -154,6 +154,15 @@ public class CloudsController {
         }
     }
 
+    public void removeOffScreenCollectables() {
+        for (int i = 0; i < collectables.size; i++) {
+            if ((collectables.get(i).getY() - GameInfo.HEIGHT / 2f - 15) > cameraY) {
+                collectables.get(i).getTexture().dispose();
+                collectables.removeIndex(i);
+            }
+        }
+    }
+
 
     public Player positionThePlayer(Player player) {
         player = new Player(world, clouds.get(0).getX(), clouds.get(0).getY() + 78);
