@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.clouds.CloudsController;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.helpers.GameManager;
 import com.devkasatkin.jackthegiant.huds.UIHud;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.player.Player;
@@ -26,6 +27,7 @@ public class Gameplay implements Screen, ContactListener {
     private World world;
     private Viewport viewport;
     private float lastYposition;
+    private boolean touchedForTheFirstTime;
     private CloudsController cloudsController;
     private Player player;
     private UIHud hud;
@@ -68,13 +70,25 @@ public class Gameplay implements Screen, ContactListener {
         }
     }
 
+    private void checkForFirstTouch() {
+        if (!touchedForTheFirstTime) {
+            if (Gdx.input.justTouched()) {
+                touchedForTheFirstTime = true;
+                GameManager.getInstance().isPaused = false;
+            }
+        }
+    }
+
     public void update(float dt) {
-        handleInput(dt);
-        moveCamera();
-        checkBackgroundOutOfBounds();
-        cloudsController.setCameraY(mainCamera.position.y);
-        cloudsController.createAndArrangeNewClouds();
-        cloudsController.removeOffScreenCollectables();
+        checkForFirstTouch();
+        if (!GameManager.getInstance().isPaused) {
+            handleInput(dt);
+            moveCamera();
+            checkBackgroundOutOfBounds();
+            cloudsController.setCameraY(mainCamera.position.y);
+            cloudsController.createAndArrangeNewClouds();
+            cloudsController.removeOffScreenCollectables();
+        }
     }
 
     private void moveCamera() {
@@ -189,14 +203,14 @@ public class Gameplay implements Screen, ContactListener {
 
         if (body1.getUserData() == "Player" && body2.getUserData() == "Coin") {
             //collided with the coin
-            System.out.println("COIN");
+            hud.incrementCoins();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
         }
 
         if (body1.getUserData() == "Player" && body2.getUserData() == "Life") {
             //collided with the life
-            System.out.println("LIFE");
+            hud.incrementLifes();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
         }

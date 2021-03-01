@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.helpers.GameManager;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.Gameplay;
 import com.devkasatkin.jackthegiant.scenes.Highscore;
@@ -77,6 +78,7 @@ public class MainMenuButtons {
         playBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                GameManager.getInstance().gameStartedFromMainMenu = true;
                 game.setScreen(new Gameplay(game));
             }
         });

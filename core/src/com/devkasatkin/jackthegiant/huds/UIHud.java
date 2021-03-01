@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.helpers.GameManager;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.MainMenu;
 
@@ -45,6 +46,16 @@ public class UIHud {
         viewport = new StretchViewport(GameInfo.WIDTH, GameInfo.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         Gdx.input.setInputProcessor(stage);
+
+        if (GameManager.getInstance().gameStartedFromMainMenu) {
+            // this is the first time starting the game, set initial values
+            GameManager.getInstance().gameStartedFromMainMenu = false;
+
+            GameManager.getInstance().lifeScore = 2;
+            GameManager.getInstance().coinScore = 0;
+            GameManager.getInstance().score = 0;
+        }
+
         createLabels();
         createImages();
         createButtonsAndAddListeners();
@@ -88,9 +99,12 @@ public class UIHud {
 
         BitmapFont font = generator.generateFont(parameter);
 
-        coinLabel = new Label("x0", new Label.LabelStyle(font, Color.WHITE));
-        lifeLabel = new Label("x2", new Label.LabelStyle(font, Color.WHITE));
-        scoreLabel =  new Label("100", new Label.LabelStyle(font, Color.WHITE));
+        coinLabel = new Label("x " + GameManager.getInstance().coinScore,
+                new Label.LabelStyle(font, Color.WHITE));
+        lifeLabel = new Label("x " + GameManager.getInstance().lifeScore,
+                new Label.LabelStyle(font, Color.WHITE));
+        scoreLabel =  new Label("" + GameManager.getInstance().score,
+                new Label.LabelStyle(font, Color.WHITE));
     }
 
     private void createImages() {
@@ -107,7 +121,10 @@ public class UIHud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // code for pausing the game
-                createPausePanel();
+                if (!GameManager.getInstance().isPaused) {
+                    GameManager.getInstance().isPaused = true;
+                    createPausePanel();
+                }
             }
         });
 
@@ -132,6 +149,7 @@ public class UIHud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 removePausePanel();
+                GameManager.getInstance().isPaused = false;
             }
         });
 
@@ -146,6 +164,23 @@ public class UIHud {
         stage.addActor(pauseBtn);
         stage.addActor(resumeBtn);
         stage.addActor(quitBtn);
+    }
+
+    public void incrementScore(int score) {
+        GameManager.getInstance().score += score;
+        scoreLabel.setText(String.valueOf(GameManager.getInstance().score));
+    }
+
+    public void incrementCoins() {
+        GameManager.getInstance().coinScore++;
+       coinLabel.setText("x " + GameManager.getInstance().coinScore);
+       incrementScore(200);
+    }
+
+    public void incrementLifes() {
+        GameManager.getInstance().lifeScore++;
+        lifeLabel.setText("x " + GameManager.getInstance().lifeScore);
+        incrementScore(300);
     }
 
     private void removePausePanel() {

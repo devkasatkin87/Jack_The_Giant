@@ -88,7 +88,7 @@ public class CloudsController {
                 //spawn collectable items
                 if (!firstTimeArranging && !c.getCloudName().equals("Dark Cloud")) {
                     int rand = random.nextInt(10);
-                    if (rand > 5) {
+                    if (rand > 3) {
                         int randomCollectable = random.nextInt(2);
                         if (randomCollectable == 0) {
                             //spawn a life, if the life counter is lower than 2
@@ -107,7 +107,6 @@ public class CloudsController {
                 }
             }
         }
-
     }
 
     public void drawClouds(SpriteBatch batch) {
