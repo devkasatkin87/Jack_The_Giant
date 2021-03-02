@@ -88,6 +88,7 @@ public class Gameplay implements Screen, ContactListener {
             cloudsController.setCameraY(mainCamera.position.y);
             cloudsController.createAndArrangeNewClouds();
             cloudsController.removeOffScreenCollectables();
+            checkPlayerBounds();
         }
     }
 
@@ -121,6 +122,23 @@ public class Gameplay implements Screen, ContactListener {
         }
     }
 
+    private void checkPlayerBounds() {
+        if ((player.getY() - GameInfo.HEIGHT / 2f - player.getHeight() / 2) > mainCamera.position.y) {
+            System.out.println("Player out of bounds UP");
+            GameManager.getInstance().isPaused = true;
+        }
+
+        if ((player.getY() + GameInfo.HEIGHT / 2f + player.getHeight() / 2) < mainCamera.position.y) {
+            System.out.println("Player out of bounds DOWN");
+            GameManager.getInstance().isPaused = true;
+        }
+
+        if (player.getX() - 25 > GameInfo.WIDTH || player.getX() + 25 < 0) {
+            System.out.println("Player out of bounds side");
+            GameManager.getInstance().isPaused = true;
+        }
+    }
+
     @Override
     public void show() {
 
@@ -144,7 +162,7 @@ public class Gameplay implements Screen, ContactListener {
 
         game.getBatch().end();
 
-        debugRenderer.render(world, box2DCamera.combined);
+        //debugRenderer.render(world, box2DCamera.combined);
 
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
