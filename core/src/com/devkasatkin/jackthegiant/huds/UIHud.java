@@ -197,4 +197,29 @@ public class UIHud {
         resumeBtn.remove();
         quitBtn.remove();
     }
+
+    public void createGameOverPanel() {
+        Image gameOverPanel = new Image(new Texture("Buttons/Pause/Show Score.png"));
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fonts/blow.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter =
+                new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 70;
+
+        BitmapFont font = generator.generateFont(parameter);
+
+        Label endScore = new Label(String.valueOf(GameManager.getInstance().score),
+                        new Label.LabelStyle(font, Color.WHITE));
+        Label endCoinScore = new Label(String.valueOf(GameManager.getInstance().coinScore),
+                new Label.LabelStyle(font, Color.WHITE));
+
+        gameOverPanel.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f, Align.center);
+        endScore.setPosition(GameInfo.WIDTH / 2f - 30, GameInfo.HEIGHT / 2f + 20, Align.center);
+        endCoinScore.setPosition(GameInfo.WIDTH / 2f - 30, GameInfo.HEIGHT / 2f - 90, Align.center);
+
+        stage.addActor(gameOverPanel);
+        stage.addActor(endScore);
+        stage.addActor(endCoinScore);
+    }
 } // ui hud

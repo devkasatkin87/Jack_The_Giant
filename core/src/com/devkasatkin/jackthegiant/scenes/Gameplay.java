@@ -165,7 +165,10 @@ public class Gameplay implements Screen, ContactListener {
         if (GameManager.getInstance().lifeScore < 0) {
             //game over
             //check new highscore
-            //show highscore
+
+            //show the end score to user
+
+            hud.createGameOverPanel();
 
             //load main menu
             //Determines the sequence of actions for displaying the main menu
