@@ -183,6 +183,15 @@ public class UIHud {
         incrementScore(300);
     }
 
+    public void decrenentLife() {
+        GameManager.getInstance().lifeScore--;
+        if (GameManager.getInstance().lifeScore >= 0) {
+            lifeLabel.setText("x " + GameManager.getInstance().lifeScore);
+        } else {
+            // game over
+        }
+    }
+
     private void removePausePanel() {
         pausePanel.remove();
         resumeBtn.remove();

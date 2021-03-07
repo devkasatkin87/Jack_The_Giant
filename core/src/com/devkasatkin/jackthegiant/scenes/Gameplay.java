@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.clouds.CloudsController;
@@ -30,6 +33,7 @@ public class Gameplay implements Screen, ContactListener {
     private boolean touchedForTheFirstTime;
     private CloudsController cloudsController;
     private Player player;
+    private float lastPlayerY;
     private UIHud hud;
 
     public Gameplay(GameMain game) {
@@ -75,6 +79,7 @@ public class Gameplay implements Screen, ContactListener {
             if (Gdx.input.justTouched()) {
                 touchedForTheFirstTime = true;
                 GameManager.getInstance().isPaused = false;
+                lastPlayerY = player.getY();
             }
         }
     }
@@ -89,6 +94,7 @@ public class Gameplay implements Screen, ContactListener {
             cloudsController.createAndArrangeNewClouds();
             cloudsController.removeOffScreenCollectables();
             checkPlayerBounds();
+            countScore();
         }
     }
 
@@ -124,18 +130,79 @@ public class Gameplay implements Screen, ContactListener {
 
     private void checkPlayerBounds() {
         if ((player.getY() - GameInfo.HEIGHT / 2f - player.getHeight() / 2) > mainCamera.position.y) {
-            System.out.println("Player out of bounds UP");
-            GameManager.getInstance().isPaused = true;
+            if (!player.isDied()) {
+                playerDied();
+            }
         }
 
         if ((player.getY() + GameInfo.HEIGHT / 2f + player.getHeight() / 2) < mainCamera.position.y) {
-            System.out.println("Player out of bounds DOWN");
-            GameManager.getInstance().isPaused = true;
+            if (!player.isDied()) {
+                playerDied();
+            }
         }
 
         if (player.getX() - 25 > GameInfo.WIDTH || player.getX() + 25 < 0) {
-            System.out.println("Player out of bounds side");
-            GameManager.getInstance().isPaused = true;
+            if (!player.isDied()) {
+                playerDied();
+            }
+        }
+    }
+
+    private void countScore() {
+        if (lastPlayerY > player.getY()) {
+            hud.incrementScore(1);
+            lastPlayerY = player.getY();
+        }
+    }
+
+    private void playerDied() {
+        GameManager.getInstance().isPaused = true;
+        // decrenent life count
+        hud.decrenentLife();
+        player.setDied(true);
+        player.setPosition(1000,1000);
+
+        if (GameManager.getInstance().lifeScore < 0) {
+            //game over
+            //check new highscore
+            //show highscore
+
+            //load main menu
+            //Determines the sequence of actions for displaying the main menu
+            RunnableAction run = new RunnableAction();
+            run.setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    // add custom code for action
+                    game.setScreen(new MainMenu(game));
+                }
+            });
+
+            SequenceAction sa = new SequenceAction();
+            sa.addAction(Actions.delay(3f));
+            sa.addAction(Actions.fadeOut(1f));
+            sa.addAction(run);
+
+            hud.getStage().addAction(sa);
+
+        } else {
+            //reload the game with continue
+
+            RunnableAction run = new RunnableAction();
+            run.setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    // add custom code for action
+                    game.setScreen(new Gameplay(game));
+                }
+            });
+
+            SequenceAction sa = new SequenceAction();
+            sa.addAction(Actions.delay(3f));
+            sa.addAction(Actions.fadeOut(1f));
+            sa.addAction(run);
+
+            hud.getStage().addAction(sa);
         }
     }
 
@@ -166,6 +233,7 @@ public class Gameplay implements Screen, ContactListener {
 
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
+        hud.getStage().act();// necessarily for sequenceActions
 
         game.getBatch().setProjectionMatrix(mainCamera.combined);
         mainCamera.update();
@@ -231,6 +299,12 @@ public class Gameplay implements Screen, ContactListener {
             hud.incrementLifes();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
+        }
+
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Dark Cloud") {
+            if (!player.isDied()) {
+                playerDied();
+            }
         }
     }
 

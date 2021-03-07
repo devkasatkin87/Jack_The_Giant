@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -17,6 +20,7 @@ import com.devkasatkin.jackthegiant.helpers.GameManager;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.Gameplay;
 import com.devkasatkin.jackthegiant.scenes.Highscore;
+import com.devkasatkin.jackthegiant.scenes.MainMenu;
 import com.devkasatkin.jackthegiant.scenes.Options;
 
 public class MainMenuButtons {
@@ -79,7 +83,21 @@ public class MainMenuButtons {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GameManager.getInstance().gameStartedFromMainMenu = true;
-                game.setScreen(new Gameplay(game));
+
+                RunnableAction run = new RunnableAction();
+                run.setRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        // add custom code for action
+                        game.setScreen(new Gameplay(game));
+                    }
+                });
+
+                SequenceAction sa = new SequenceAction();
+                sa.addAction(Actions.fadeOut(1f));
+                sa.addAction(run);
+
+                stage.addAction(sa);
             }
         });
 

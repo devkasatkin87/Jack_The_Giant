@@ -56,6 +56,7 @@ public class MainMenu implements Screen {
 
         game.getBatch().setProjectionMatrix(btns.getStage().getCamera().combined);
         btns.getStage().draw();
+        btns.getStage().act(); // necessarily for sequenceActions
     }
 
     @Override
