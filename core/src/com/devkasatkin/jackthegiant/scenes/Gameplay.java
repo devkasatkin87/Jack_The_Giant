@@ -35,6 +35,9 @@ public class Gameplay implements Screen, ContactListener {
     private Player player;
     private float lastPlayerY;
     private UIHud hud;
+    private float cameraSpeed = 10;
+    private  float maxSpeed = 10;
+    private float acceleration = 10;
 
     public Gameplay(GameMain game) {
         this.game = game;
@@ -62,6 +65,8 @@ public class Gameplay implements Screen, ContactListener {
         hud = new UIHud(game);
 
         createBackgrounds();
+
+        setCameraSpeed();
     }
 
     public void handleInput(float dt) {
@@ -88,7 +93,7 @@ public class Gameplay implements Screen, ContactListener {
         checkForFirstTouch();
         if (!GameManager.getInstance().isPaused) {
             handleInput(dt);
-            moveCamera();
+            moveCamera(dt);
             checkBackgroundOutOfBounds();
             cloudsController.setCameraY(mainCamera.position.y);
             cloudsController.createAndArrangeNewClouds();
@@ -98,8 +103,35 @@ public class Gameplay implements Screen, ContactListener {
         }
     }
 
-    private void moveCamera() {
-        mainCamera.position.y -= 1.5f;
+    private void moveCamera(float delta) {
+        mainCamera.position.y -= cameraSpeed * delta;
+
+        cameraSpeed += acceleration * delta;
+
+        if (cameraSpeed > maxSpeed) {
+            cameraSpeed = maxSpeed;
+        }
+    }
+
+    private void setCameraSpeed () {
+        if (GameManager.getInstance().gameData.isEasyDifficilty()) {
+            System.out.println("Easy");
+            cameraSpeed = 80;
+            maxSpeed = 100;
+        }
+
+        if (GameManager.getInstance().gameData.isMediumDifficilty()) {
+            System.out.println("Medium");
+            cameraSpeed = 100;
+            maxSpeed = 120;
+        }
+
+        if (GameManager.getInstance().gameData.isHardDifficilty()) {
+            System.out.println("Hard");
+            cameraSpeed = 140;
+            maxSpeed = 160;
+        }
+
     }
 
 

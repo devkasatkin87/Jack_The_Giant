@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.devkasatkin.jackthegiant.helpers.GameInfo;
+import com.devkasatkin.jackthegiant.helpers.GameManager;
 import com.devkasatkin.jackthegiant.main.GameMain;
 import com.devkasatkin.jackthegiant.scenes.MainMenu;
 
@@ -71,8 +72,40 @@ public class OptionsButtons {
         mediumBtn.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f - 40, Align.center);
         hardBtn.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f - 120, Align.center);
 
-        //remove this later
-        checkSignBtn.setPosition(GameInfo.WIDTH / 2f + 76, mediumBtn.getY() + 13, Align.bottomLeft);
+        positionSign();
+    }
+
+    private void positionSign() {
+        if (GameManager.getInstance().gameData.isEasyDifficilty()) {
+            checkSignBtn.setPosition(GameInfo.WIDTH / 2f + 76, easyBtn.getY() + 13, Align.bottomLeft);
+        }
+        if (GameManager.getInstance().gameData.isMediumDifficilty()) {
+            checkSignBtn.setPosition(GameInfo.WIDTH / 2f + 76, mediumBtn.getY() + 13, Align.bottomLeft);
+        }
+        if (GameManager.getInstance().gameData.isHardDifficilty()) {
+            checkSignBtn.setPosition(GameInfo.WIDTH / 2f + 76, hardBtn.getY() + 13, Align.bottomLeft);
+        }
+    }
+
+    private void changeDifficulty(int difficulty) {
+        switch (difficulty) {
+            case 0 :
+                GameManager.getInstance().gameData.setEasyDifficilty(true);
+                GameManager.getInstance().gameData.setMediumDifficilty(false);
+                GameManager.getInstance().gameData.setHardDifficilty(false);
+                break;
+            case 1 :
+                GameManager.getInstance().gameData.setEasyDifficilty(false);
+                GameManager.getInstance().gameData.setMediumDifficilty(true);
+                GameManager.getInstance().gameData.setHardDifficilty(false);
+                break;
+            case 2 :
+                GameManager.getInstance().gameData.setEasyDifficilty(false);
+                GameManager.getInstance().gameData.setMediumDifficilty(false);
+                GameManager.getInstance().gameData.setHardDifficilty(true);
+                break;
+        }
+        GameManager.getInstance().saveData();
     }
 
     private void addAllListeners() {
@@ -86,6 +119,7 @@ public class OptionsButtons {
         easyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                changeDifficulty(0);
                 checkSignBtn.setY(easyBtn.getY() + 13);
             }
         });
@@ -93,6 +127,7 @@ public class OptionsButtons {
         mediumBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                changeDifficulty(1);
                 checkSignBtn.setY(mediumBtn.getY() + 13);
             }
         });
@@ -100,6 +135,7 @@ public class OptionsButtons {
         hardBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                changeDifficulty(2);
                 checkSignBtn.setY(hardBtn.getY() + 13);
             }
         });
