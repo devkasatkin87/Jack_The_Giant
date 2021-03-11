@@ -3,6 +3,7 @@ package com.devkasatkin.jackthegiant.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,6 +40,8 @@ public class Gameplay implements Screen, ContactListener {
     private  float maxSpeed = 10;
     private float acceleration = 10;
 
+    private Sound coinSound, lifeSound;
+
     public Gameplay(GameMain game) {
         this.game = game;
 
@@ -67,6 +70,9 @@ public class Gameplay implements Screen, ContactListener {
         createBackgrounds();
 
         setCameraSpeed();
+
+        coinSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Coin sound.wav"));
+        lifeSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Life sound.wav"));
     }
 
     public void handleInput(float dt) {
@@ -308,6 +314,9 @@ public class Gameplay implements Screen, ContactListener {
         player.getTexture().dispose();
 
         debugRenderer.dispose();
+
+        coinSound.dispose();
+        lifeSound.dispose();
     }
 
     @Override
@@ -326,6 +335,7 @@ public class Gameplay implements Screen, ContactListener {
         if (body1.getUserData() == "Player" && body2.getUserData() == "Coin") {
             //collided with the coin
             hud.incrementCoins();
+            coinSound.play();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
         }
@@ -333,6 +343,7 @@ public class Gameplay implements Screen, ContactListener {
         if (body1.getUserData() == "Player" && body2.getUserData() == "Life") {
             //collided with the life
             hud.incrementLifes();
+            lifeSound.play();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
         }

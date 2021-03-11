@@ -1,5 +1,6 @@
 package com.devkasatkin.jackthegiant.huds;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,6 +53,8 @@ public class MainMenuButtons {
         stage.addActor(optionsBtn);
         stage.addActor(quitBtn);
         stage.addActor(musicBtn);
+
+        checkMusic();
     }
 
     public Stage getStage() {
@@ -118,15 +121,28 @@ public class MainMenuButtons {
         quitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
             }
         });
 
         musicBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (GameManager.getInstance().gameData.isMusicOn()) {
+                    GameManager.getInstance().gameData.setMusicOn(false);
+                    GameManager.getInstance().stopMusic();
+                } else {
+                    GameManager.getInstance().gameData.setMusicOn(true);
+                    GameManager.getInstance().playMusic();
+                }
+                GameManager.getInstance().saveData();
             }
         });
+    }
 
-
+    private void checkMusic() {
+        if (GameManager.getInstance().gameData.isMusicOn()) {
+            GameManager.getInstance().playMusic();
+        }
     }
 }// main menu bnts
